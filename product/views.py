@@ -22,7 +22,7 @@ class CategoryView(ModelViewSet):
 
 class ProductListCreate(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAdminOrReadOnly]
-    parser_classes = [MultiPartParser, FormParser]
+    # parser_classes = [MultiPartParser, FormParser]
 
     def get_serializer_class(self):
 
@@ -49,9 +49,16 @@ class ProductListCreate(generics.ListCreateAPIView):
         
         return queryset
 
-
 class ProductDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializerCreate
+    # serializer_class = ProductSerializerCreate
+
+    def get_serializer_class(self):
+        if self.request.method not in SAFE_METHODS:
+            return ProductSerializerCreate
+
+        else:
+            return ProductSerializerDetail
+        
     permission_classes = [permissions.IsAdmin]
 
